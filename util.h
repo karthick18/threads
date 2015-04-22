@@ -24,14 +24,14 @@
 
 /* Allocate memory in a dynamic way */
 
-#define ALLOC_MEM(ptr,nr,opt)  ({ \
-__typeof__(ptr) __temp = ( __typeof__(ptr) )malloc( (nr) * ( sizeof(*(ptr) ) + (opt) ) );\
- if(! __temp) \
- NULL;\
- memset(__temp,0,( (nr) * ( sizeof(*(ptr) ) + (opt) ) ) );\
- __temp; \
+#define ALLOC_MEM(ptr,nr,opt)  ({                                       \
+            __typeof__(ptr) __temp = ( __typeof__(ptr) )malloc( (nr) * ( sizeof(*(ptr) ) + (opt) ) ); \
+            if(__temp) {                                                \
+                memset(__temp,0,( (nr) * ( sizeof(*(ptr) ) + (opt) ) ) ); \
+            }                                                           \
+            __temp;                                                     \
 })
 
-extern volatile void message(int exit_status,FILE *,const char *fmt,...);
+extern void message(int exit_status,FILE *,const char *fmt,...);
 
 #endif

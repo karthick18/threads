@@ -201,14 +201,14 @@ int execute_threads(void) {
     goto out;
   }
   if(! save_regs(ptr) ) { 
-    fprintf(stderr,"Performing a switch to execute the threads after saving the main context:");
+    fprintf(stderr,"Performing a switch to execute the threads after saving the main context:\n");
     initialise();
     schedule(); //run the scheduler that switches to the next process
   }else { 
     if(reaper) task_del(reaper); //release any zombie tasks
     stop_timer();//stop the timer
     ipc_release(); //release the IPC resources
-    fprintf(stderr,"Returned after all the threads have exited:");
+    fprintf(stderr,"Returned after all the threads have exited:\n");
   }
   return 0;
  out:

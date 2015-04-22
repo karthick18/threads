@@ -308,7 +308,7 @@ int thread_semctl(int semid,int semnum,int cmd,union t_semun *semun) {
    
     break;
 
-  default:
+  default:;
   #ifdef DEBUG
     fprintf(stderr,"thread_semctl:Invalid semctl cmd (%d)\n",cmd);
    #endif
@@ -535,7 +535,7 @@ void thread_sem_exit() {
        }
      }
      update_queue(sem_array); //maybe some guys are waiting for this change
-  next_entry:
+  next_entry:;
   }
   current->sem_undo = NULL;
   unlock();

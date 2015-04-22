@@ -30,16 +30,16 @@
 #define BUFFER 1024
 
 /*Not used that much now as it uses a lot of stack.*/
-volatile void message(int exit_status,FILE *fptr,const char *fmt,...) {
-  char buffer[BUFFER+1];
-  va_list ptr;
-  va_start(ptr,fmt);
-  vsnprintf(buffer,BUFFER,fmt,ptr);
-  va_end(ptr);
-  fprintf(stderr,"%s\n",buffer);
-  if(exit_status) 
-    exit(exit_status);
-  return ;
+void message(int exit_status,FILE *fptr,const char *fmt,...) {
+    char buffer[BUFFER+1];
+    va_list ptr;
+    va_start(ptr,fmt);
+    vsnprintf(buffer,BUFFER,fmt,ptr);
+    va_end(ptr);
+    fprintf(stderr,"%s\n",buffer);
+    if(exit_status) 
+        exit(exit_status);
+    return ;
 }
 
 /* 

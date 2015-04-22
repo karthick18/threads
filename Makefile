@@ -1,7 +1,7 @@
 ##Makefile for the Multi Threading Library,which seems to be working okay.
 CC=gcc
-DEBUG=-g -DDEBUG
-CFLAGS=-O2 -Wall $(DEBUG)
+DEBUG=-g #-DDEBUG
+CFLAGS=$(DEBUG) -Wall $(DEBUG)
 TARGET=libmythread.a
 AR=ar
 RANLIB=ranlib
@@ -12,9 +12,9 @@ USER_APP=main_prog
 CPP = cpp -P
 OBJECTS = task.o save_asm.o mytimer.o timer.o wait.o util.o sched.o sem.o main_sem.o
 AS=as
-ASFLAGS=
+ASFLAGS=-g
 
-all:.depend $(TARGET) install $(USER_APP) 
+all:.depend $(TARGET) $(USER_APP) 
 
 $(TARGET): $(OBJECTS)
 	$(AR) cr $@ $^;\
@@ -46,7 +46,7 @@ sched.o: sched.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 main_prog: main.o
-	$(CC) -o $@ $^  -static -l$(MYLIB)
+	$(CC) $(CFLAGS) -o $@ $^  -static -L./ -l$(MYLIB)
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c $^ -o $@

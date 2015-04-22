@@ -41,7 +41,7 @@
 
 #define JIFFIES_LIMIT       5 //just a cutoff to reduce the thread counter val.
 
-extern volatile void schedule(void);
+extern void schedule(void);
 
 extern struct timeval sched_timer;
 

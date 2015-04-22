@@ -35,18 +35,26 @@
 #define TASK_STACK_START   0x30 //around 50 bytes
 
 struct regs {
-  unsigned int eax; 
-  unsigned int ebx;
-  unsigned int ecx;
-  unsigned int edx;
-  unsigned int esi;
-  unsigned int edi;
-  unsigned int cs; 
-  unsigned int ds;
-  unsigned int esp;
-  unsigned int ebp;
-  unsigned int eip;
-  unsigned int eflags;
+    unsigned long eax; 
+    unsigned long ebx;
+    unsigned long ecx;
+    unsigned long edx;
+    unsigned long esi;
+    unsigned long edi;
+    unsigned long cs; 
+    unsigned long ds;
+    unsigned long esp;
+    unsigned long ebp;
+    unsigned long eip;
+    unsigned long eflags;
+    unsigned long r8;
+    unsigned long r9;
+    unsigned long r10;
+    unsigned long r11;
+    unsigned long r12;
+    unsigned long r13;
+    unsigned long r14;
+    unsigned long r15;
 };
 
 struct thread_struct {

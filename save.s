@@ -22,67 +22,87 @@
  .globl save_regs,restore_regs,restore_ret_regs,thread_reaper
 
 save_regs:
-        pushl %ebp
-        movl %esp,%ebp
-        pushl %ebx
-        movl 8(%ebp),%ebx
-        movl %eax,0(%ebx)
-        movl %ecx,8(%ebx)
-        movl %edx,12(%ebx)
-        movl %esi,16(%ebx)
-        movl %edi,20(%ebx)
-        movl %cs, 24(%ebx)
-        movl %ds, 28(%ebx)
-        pushfl
-        popl 44(%ebx)
-        movl 4(%ebp),%ecx
-        movl %ecx,40(%ebx)
-        movl %ebx, %ecx
-        popl 4(%ecx)
-        popl 36(%ecx)
-        movl 36(%ecx),%ebp
-        movl %esp,32(%ecx)
-        xorl %eax,%eax
+        push %rbp
+        mov %rsp,%rbp
+        push %rbx
+        mov %rdi,%rbx
+        mov %rax,0(%rbx)
+        mov %rcx,16(%rbx)
+        mov %rdx,24(%rbx)
+        mov %rsi,32(%rbx)
+        mov %rdi,40(%rbx)
+        mov %cs, 48(%rbx)
+        mov %ds, 56(%rbx)
+        mov %r8, 96(%rbx)
+        mov %r9, 104(%rbx)
+        mov %r10, 112(%rbx)
+        mov %r11, 120(%rbx)
+        mov %r12, 128(%rbx)
+        mov %r13, 136(%rbx)
+        mov %r14, 144(%rbx)
+        mov %r15, 152(%rbx)
+        pushf
+        pop 88(%rbx)
+        mov 8(%rbp),%rcx
+        mov %rcx,80(%rbx)
+        mov %rbx, %rcx
+        pop 8(%rcx)
+        pop 72(%rcx)
+        mov 72(%rcx),%rbp
+        mov %rsp,64(%rcx)
+        xor %rax,%rax
         ret
 
 restore_regs:
-        movl %esp,%ebp
-        movl 4(%ebp), %ebx
-        movl 8(%ebx), %ecx
-        movl 12(%ebx),%edx
-        movl 16(%ebx),%esi
-        movl 20(%ebx),%edi
-
-        pushl 44(%ebx)
-        popfl
-        movl 40(%ebx),%eax
-        movl %eax,0(%ebp)
-        movl %ebx,%eax
-        movl 4(%eax),%ebx
-        movl 36(%eax),%ebp
-        movl 32(%eax),%esp
-        pushl 40(%eax)
-        movl $1,%eax
+        mov %rsp,%rbp
+        mov 8(%rdi), %rbx
+        mov 16(%rdi), %rcx
+        mov 24(%rdi),%rdx
+        mov 32(%rdi),%rsi
+        mov 96(%rdi),%r8
+        mov 104(%rdi),%r9
+        mov 112(%rdi),%r10
+        mov 120(%rdi),%r11
+        mov 128(%rdi),%r12
+        mov 136(%rdi),%r13
+        mov 144(%rdi),%r14
+        mov 152(%rdi),%r15
+        push 88(%rdi)
+        popf
+        mov 80(%rdi),%rax
+        mov %rax,0(%rbp)
+        mov %rdi,%rax
+        mov 40(%rax),%rdi
+        mov 72(%rax),%rbp
+        mov 64(%rax),%rsp
+        push 80(%rax)
+        mov $1,%rax
         ret
 
-
-
 restore_ret_regs:
-        movl %esp,%ebp
-        movl 4(%ebp), %ebx
-        movl 8(%ebx), %ecx
-        movl 12(%ebx),%edx
-        movl 16(%ebx),%esi
-        movl 20(%ebx),%edi
-        pushl 44(%ebx)
-        popfl
-        movl %ebx,%eax
-        movl 4(%eax),%ebx
-        movl 32(%eax),%esp
-        pushl 8(%ebp)
-        movl 36(%eax),%ebp
-        call *40(%eax)
-        addl $4,%esp
-        pushl $thread_reaper
-        movl $1,%eax
+        mov %rsp,%rbp
+        mov 8(%rdi), %rbx
+        mov 16(%rdi), %rcx
+        mov 24(%rdi),%rdx
+        mov 96(%rdi),%r8
+        mov 104(%rdi),%r9
+        mov 112(%rdi),%r10
+        mov 120(%rdi),%r11
+        mov 128(%rdi),%r12
+        mov 136(%rdi),%r13
+        mov 144(%rdi),%r14
+        mov 152(%rdi),%r15
+        push 88(%rdi)
+        popf
+        mov %rdi,%rax
+        mov 64(%rax),%rsp
+        push %rdi
+        push %rsi
+        mov 32(%rax), %rsi
+        mov 72(%rax),%rbp
+        pop %rdi
+        call *80(%rax)
+        pop %rdi
+        push $thread_reaper
+        mov $1,%rax
         ret

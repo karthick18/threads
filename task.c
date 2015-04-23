@@ -128,7 +128,6 @@ struct task_struct *create_task() {
 static __inline__ void setup_task_stack(struct task_struct *task) {
   unsigned long esp=(unsigned long )task; 
   esp += TASK_SIZE;
-  esp &= ~15;
   //we dont want this code as it might fail sometimes.
 #if 0 
   if(! (esp & (TASK_SIZE - 1) ) ) { //already aligned.

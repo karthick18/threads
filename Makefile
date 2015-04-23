@@ -17,6 +17,9 @@ ASFLAGS=-g
 ifeq ("$(UNAME)", "Darwin")
 	CFLAGS += -mdynamic-no-pic
 endif
+ifeq ("$(UNAME)", "Linux")
+	LDFLAGS += -static
+endif
 
 all:.depend $(TARGET) $(USER_APP) 
 

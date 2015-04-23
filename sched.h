@@ -24,7 +24,7 @@
 
 /* Setup a 100 ms interval,so that we can get a hit rate of 10 threads per second,which should be pretty good anyway */
 
-#define TIMER_INTERVAL ( 100000 )  
+#define TIMER_INTERVAL ( 10000 )  
 
 #define MILLISECS_TIMER_INTERVAL ( TIMER_INTERVAL / 1000 )
 #define MILLISECS_PER_TICK 10 //usually 10 millisecs per tick

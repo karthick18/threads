@@ -52,7 +52,7 @@ extern void timer_interrupt(int); //SIGPROF handler
 extern int set_nice_level(int,int);
 struct task_struct; 
 extern void switch_to(struct task_struct *);
-extern void thread_reaper(void);
+extern void thread_reaper(void) asm("thread_reaper");
 extern void task_del(struct task_struct *);
 extern void release_thread_timer(int);
 extern struct list_head init_run_queue;

@@ -93,7 +93,7 @@ struct task_struct {
   unsigned long ticks; //timer for the task
   unsigned long timeout; //timer expiry for the process
   unsigned long rt_priority; //priority of the task
-  unsigned long counter; //static priority of the task
+  long counter; //static priority of the task
   int nice_level; //nice level for the task -20 to +19
   unsigned long stack_start; 
   struct thread_struct thread_struct; //thread struct for the task
@@ -106,9 +106,9 @@ struct main_context {
 };
 
 extern struct main_context main_context;
-extern int save_regs   (struct regs *);
-extern int restore_regs(struct regs *);
-extern int restore_ret_regs(struct regs *,void *);
+extern int save_regs   (struct regs *) asm("save_regs");
+extern int restore_regs(struct regs *) asm("restore_regs");
+extern int restore_ret_regs(struct regs *,void *) asm("restore_ret_regs");
 extern int create_thread(void (*)(void *),void *);
 extern int run_thread(int);
 extern int execute_threads(void);

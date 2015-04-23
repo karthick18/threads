@@ -108,7 +108,7 @@ static __inline__ void setup_signal(int signum,void (*handler)(int) ) {
   sigfillset(&set); //by default block all signals
   sigdelset(&set,signum); //dont block signum.Allow signum only
   sigact.sa_mask = set; //copy the signal mask
-  sigact.sa_flags =  SA_NOMASK; //amounts to a non maskable interrupt
+  sigact.sa_flags =  SA_NODEFER; //amounts to a non maskable interrupt
   if( sigaction(signum,&sigact,NULL) < 0) {
     fprintf(stderr,"Failed to initialise the Signal (%d)\n",signum);
     exit(1);

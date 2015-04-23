@@ -101,8 +101,10 @@ restore_ret_regs:
         mov 32(%rax), %rsi
         mov 72(%rax),%rbp
         pop %rdi
+        push %rdi
         call *80(%rax)
         pop %rdi
-        push $thread_reaper
+        pop %rdi
+        push thread_reaper@GOTPCREL(%rip)
         mov $1,%rax
         ret

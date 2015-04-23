@@ -106,9 +106,9 @@ struct main_context {
 };
 
 extern struct main_context main_context;
-extern int save_regs   (struct regs *);
-extern int restore_regs(struct regs *);
-extern int restore_ret_regs(struct regs *,void *);
+extern int save_regs   (struct regs *) asm("save_regs");
+extern int restore_regs(struct regs *) asm("restore_regs");
+extern int restore_ret_regs(struct regs *,void *) asm("restore_ret_regs");
 extern int create_thread(void (*)(void *),void *);
 extern int run_thread(int);
 extern int execute_threads(void);

@@ -194,7 +194,7 @@ int main(int argc,char **argv) {
         if(run_thread(thread_pid[i]) < 0 )  //add the threads to the run_queue
             goto out_error;
     }
-#if 0
+#if 1
     if(execute_threads() < 0) 
         goto out_error;
     return 0;
@@ -205,7 +205,7 @@ int main(int argc,char **argv) {
     }else if(pid > 0) {
         restart:
         while(wait((int*)0) != pid);
-        if(errno == ERESTART) goto restart;
+        if(errno == EINTR) goto restart;
         message(0,stderr,"Back after thread execution:\n");
     } else {
         message(0,stderr,"Error forking:\n");

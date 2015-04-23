@@ -79,26 +79,26 @@ void stop_timer(void) {
 
 void timer_interrupt(int signo) { //profile handler
 #ifdef DEBUG
-  fprintf(stderr,"Timer interrupt (%d) received:\n",signo);
+    fprintf(stderr,"Timer interrupt (%d) received:\n",signo);
 #endif
-  ++jiffies; //increment the jiffies count (100ms latency)
-  run_timer(); //run the system timers
-  if(current) {
-    ++current->ticks; //increment the ticks
-    --current->counter; //decrement the time slice
-    if(current->counter < 0) current->counter = 0; //shouldnt happen
-  }
+    ++jiffies; //increment the jiffies count (100ms latency)
+    run_timer(); //run the system timers
+    if(current) {
+        ++current->ticks; //increment the ticks
+        --current->counter; //decrement the time slice
+        if((long)current->counter < 0) current->counter = 0; //shouldnt happen
+    }
 #if 0
-  if(current && current->counter) 
-    --current->counter; //decrement the time slice of the thread
-  if(! current->counter) {
-    //if the time slice of the thread gets finished,reschedule
-   schedule(); //run the schduler to pick up the next thread  
-  } 
+    if(current && current->counter) 
+        --current->counter; //decrement the time slice of the thread
+    if(! current->counter) {
+        //if the time slice of the thread gets finished,reschedule
+        schedule(); //run the schduler to pick up the next thread  
+    } 
 #endif
-  if(! IS_SEMOP(sem_ipcids) )  //call the scheduler when the sem isnt locked
-   schedule(); //get on to the next thread on each SIGPROF signal
-  /*else continue with the same thread as its time slice isnt over.*/
+    if(! IS_SEMOP(sem_ipcids) )  //call the scheduler when the sem isnt locked
+        schedule(); //get on to the next thread on each SIGPROF signal
+    /*else continue with the same thread as its time slice isnt over.*/
 }
 
 static __inline__ void setup_signal(int signum,void (*handler)(int) ) { 

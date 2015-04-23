@@ -29,10 +29,11 @@
 #define INIT_TASK_PID 0
 #define PAGE_SHIFT 12
 #define PAGE_SIZE  ( 1 << PAGE_SHIFT)
-#define TASK_SIZE  ( PAGE_SIZE << 2)
+#define TASK_STACK_ALIGN  (0x10) //16 bytes for darwin
+#define TASK_STACK_START  (0x30) //safety barrier
+#define TASK_SIZE  ( (PAGE_SIZE << 2) + TASK_STACK_ALIGN )
 #define PAGE_MASK  ( ~(PAGE_SIZE - 1)  )
 #define PAGE_ALIGN(entity)    ( ( (entity) + PAGE_SIZE - 1 ) & (PAGE_MASK) )
-#define TASK_STACK_START   0x30 //around 50 bytes
 
 struct regs {
     unsigned long eax; 

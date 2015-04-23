@@ -33,18 +33,18 @@
 static DECLARE_LIST_HEAD(system_timer); //head of system timers
 
 void init_timer(struct timer_struct *timer) {
-  timer->timer.next =timer->timer.prev = NULL ; //initialise the list heads
-  timer->arg = 0;
-  timer->expiry = 0; //zero off the expiry
-  timer->routine = NULL; //routine for the timer
+    timer->timer.next =timer->timer.prev = NULL ; //initialise the list heads
+    timer->arg = 0;
+    timer->expiry = 0; //zero off the expiry
+    timer->routine = NULL; //routine for the timer
 }
 
 void set_timer(struct timer_struct *ptr,unsigned long expiry,void (*func)(void *), void *arg,int timer_id) {
-  ptr->expiry  = expiry; //setup the timer expiry
-  ptr->routine = func; //setup the timer callback
-  ptr->arg     = arg; //setup the argument
-  ptr->timer_id = timer_id; //setup the timer id
-  return ;
+    ptr->expiry  = expiry; //setup the timer expiry
+    ptr->routine = func; //setup the timer callback
+    ptr->arg     = arg; //setup the argument
+    ptr->timer_id = timer_id; //setup the timer id
+    return ;
 }
 /* Add a timer:Adding a timer to the system activates the thread on a timer expiry.
  */
@@ -70,11 +70,11 @@ out:
 /*Delete a timer from the system timer */
 
 void del_timer(struct timer_struct *timer) {
-  if(timer->timer.next && timer->timer.prev ) {
-    list_del(&timer->timer); //delete the timer from the list
-    timer->timer.next = timer->timer.prev = NULL;
-  }
-  return ;
+    if(timer->timer.next && timer->timer.prev ) {
+        list_del(&timer->timer); //delete the timer from the list
+        timer->timer.next = timer->timer.prev = NULL;
+    }
+    return ;
 }
 
 /* Check whether the timer list is empty or not */
@@ -87,44 +87,44 @@ int is_timer() {
 /*Run the system timers*/
 
 void run_timer(void) {
-  struct list_head *head = &system_timer;
-  struct list_head *traverse;
-  struct list_head *next;
-  //check for expired timers try running them
-  for(traverse= head->next; traverse != head; traverse= next) {
-    struct timer_struct *timer = list_entry(traverse,struct timer_struct,timer);
-    next = traverse->next;
+    struct list_head *head = &system_timer;
+    struct list_head *traverse;
+    struct list_head *next;
+    //check for expired timers try running them
+    for(traverse= head->next; traverse != head; traverse= next) {
+        struct timer_struct *timer = list_entry(traverse,struct timer_struct,timer);
+        next = traverse->next;
 
-    if(timer->expiry && jiffies >= timer->expiry) { //the timer has expired
-      void (*func)(void *) = timer->routine; //get the routine
-      void *arg = timer->arg; //get the argument
-      del_timer(timer); //delete the timer from the list
-  #ifdef DEBUG
-      fprintf(stderr,"Timer expired:\n");
-  #endif
-      (*func)(arg); //call the routine with the argument
+        if(timer->expiry && jiffies >= timer->expiry) { //the timer has expired
+            void (*func)(void *) = timer->routine; //get the routine
+            void *arg = timer->arg; //get the argument
+            del_timer(timer); //delete the timer from the list
+#ifdef DEBUG
+            fprintf(stderr,"Timer expired:\n");
+#endif
+            (*func)(arg); //call the routine with the argument
+        }
     }
-  }
-  return ;
+    return ;
 }
 
 /*Timer expiry routine,called when the sleep_on_timeout timer expires.*/
 
 static void handle_timeout(void *task) {
-  struct task_struct *thread = (struct task_struct *)task; 
-  thread = task_hash_find(thread->pid);
-  if(! thread) {
-    fprintf(stderr,"Unable to find the Task (%d)\n",thread->pid);
-    goto out;
-  }
+    struct task_struct *thread = (struct task_struct *)task; 
+    thread = task_hash_find(thread->pid);
+    if(! thread) {
+        fprintf(stderr,"Unable to find the Task (%d)\n",thread->pid);
+        goto out;
+    }
 
 #ifdef DEBUG
-  fprintf(stderr,"Adding Task %d to the runqueue:\n",thread->pid);
+    fprintf(stderr,"Adding Task %d to the runqueue:\n",thread->pid);
 #endif
-  //add this task to the run queue
-  list_add(&thread->run_queue,&init_run_queue); 
- out:
-  return;
+    //add this task to the run queue
+    list_add(&thread->run_queue,&init_run_queue); 
+    out:
+    return;
 }
     
 /* This is an interruptible sleep on timeout routine implementation.

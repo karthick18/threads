@@ -70,7 +70,7 @@ void schedule(void) {
     struct task_struct *prev_task = current; //defaults to the current thread switched out
     struct task_struct *next_task = prev_task; //defaults to the previous task
     struct list_head *run_queue = &init_run_queue; //pointer to the run queue of tasks
-    struct list_head *traverse;
+    struct list_head *traverse, *n;
     int max = 0;//max goodness
 
     /* First free of ZOMBIES */
@@ -92,7 +92,7 @@ void schedule(void) {
 
     compute_next_task: //get the next task in the run queue
 
-    list_for_each(traverse,run_queue) { 
+    list_for_each_safe(traverse,n,run_queue) { 
         struct task_struct *task = list_entry(traverse,struct task_struct,run_queue);
         int points = goodness(task) ;  //get the goodness of the task
         if(points > max) {
@@ -114,8 +114,8 @@ void schedule(void) {
     recalculate:
     {
         struct list_head *run_queue = &init_run_queue;
-        struct list_head *traverse;
-        list_for_each(traverse,run_queue) {
+        struct list_head *traverse, *n;
+        list_for_each_safe(traverse,n,run_queue) {
             struct task_struct *task = list_entry(traverse,struct task_struct,run_queue);
             task->counter = (task->counter >> 1) - task->nice_level; //recalculate the counters
         }

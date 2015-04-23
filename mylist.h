@@ -102,8 +102,11 @@ static __inline__ void list_splice(struct list_head *a,struct list_head *b) {
   return ;
 }
 
+#define list_for_each_safe(pos, n, head) \
+    for(pos = (head)->next, (n) = (pos)->next; (pos) && (pos) != head; (pos) = (n), n = (pos) ? (pos)->next : NULL)
+
 #define list_for_each(pos,head) \
-for(pos = (head)->next; pos != (head); pos = pos->next)
+    for(pos = (head)->next; (pos) && (pos) != (head); pos = (pos)->next)
 
 #define list_entry(list_head,typecast,member) \
 (typecast *) ( (unsigned char *)(list_head) -  ( (unsigned long)&((typecast *)0)->member) )

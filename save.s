@@ -105,6 +105,7 @@ restore_ret_regs:
         call *80(%rax)
         pop %rdi
         pop %rdi
+        add $15, %rsp
         push thread_reaper@GOTPCREL(%rip)
         mov $1,%rax
         ret

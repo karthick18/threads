@@ -150,6 +150,16 @@ void switch_to(struct task_struct *prev_task){
 }
 
 void thread_reaper(void) { 
+    //we align the stack before cleaning up to satisfy OSx/darwin
+    __asm__ __volatile__("and %0, %%rsp" ::"i"(-TASK_STACK_ALIGN):"memory");
+#if 0
+    {
+        unsigned long stack = 0;
+        __asm__ __volatile__("mov %%rsp, %0" :"=m"(stack) : : "memory");
+        fprintf(stderr, "Stack during reaper at %p, aligned : %s\n", (unsigned long*)stack,
+                stack & (TASK_STACK_ALIGN-1) ? "no" : "yes");
+    }
+#endif
     if(current) { 
         release_thread_timer(current->pid); //release the timers for this thread
         //undo the thread semaphore

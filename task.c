@@ -45,29 +45,29 @@ struct main_context main_context;//save the main context
 /*Routines to add tasks into the Task table */
 
 static __inline__ int get_pid(void) {
-  int save_pid;
-  struct list_head *head = &init_task; //head of tasks
-  struct list_head *traverse;
-  ++last_pid;
-  save_pid = last_pid;
-  rescan :
-    list_for_each(traverse,head) {
-    struct task_struct *task = list_entry(traverse,struct task_struct,next);
-    if( ! (last_pid & MAX_PID) ) //max limit has been crossed,rescan 
-      {
-	last_pid = 0;
-      } else if(task->pid == last_pid) {
-       ++last_pid;
-      }else {
-        continue;
-      }
-    if(last_pid == save_pid) goto out; //not found
-         goto rescan; //start the scan from the next point      
-  }
-  //we are here when the pid has been successfully found
-  return last_pid;
- out:
-  return -1;
+    int save_pid;
+    struct list_head *head = &init_task; //head of tasks
+    struct list_head *traverse, *n;
+    ++last_pid;
+    save_pid = last_pid;
+    rescan :
+    list_for_each_safe(traverse,n,head) {
+        struct task_struct *task = list_entry(traverse,struct task_struct,next);
+        if( ! (last_pid & MAX_PID) ) //max limit has been crossed,rescan 
+        {
+            last_pid = 0;
+        } else if(task->pid == last_pid) {
+            ++last_pid;
+        }else {
+            continue;
+        }
+        if(last_pid == save_pid) goto out; //not found
+        goto rescan; //start the scan from the next point      
+    }
+    //we are here when the pid has been successfully found
+    return last_pid;
+    out:
+    return -1;
 }
 
 //Not really required.But doesnt harm anyway
@@ -138,6 +138,7 @@ static __inline__ void setup_task_stack(struct task_struct *task) {
   }
 #endif
   esp -= TASK_STACK_START; //setup a safety limit
+  esp &= (unsigned long)~(TASK_STACK_ALIGN - 1);
   task->stack_start = task->thread_struct.thread_regs.esp = esp; //setup the task esp 
   task->thread_struct.thread_regs.ebp = esp; //make the ebp as the stack pointer
   return;
@@ -195,25 +196,25 @@ static void initialise(void) {
   */
 
 int execute_threads(void) { 
-  struct list_head *run_queue  = &init_run_queue;
-  struct regs *ptr = &main_context.main_thread.thread_regs; //save the main threads context in this structure
-  if(LIST_EMPTY(run_queue) ) { //if the run queue is empty
-    fprintf(stderr,"Run Queue is Empty.Returning...\n");
-    goto out;
-  }
-  if(! save_regs(ptr) ) { 
-    fprintf(stderr,"Performing a switch to execute the threads after saving the main context:\n");
-    initialise();
-    schedule(); //run the scheduler that switches to the next process
-  }else { 
-    if(reaper) task_del(reaper); //release any zombie tasks
-    stop_timer();//stop the timer
-    ipc_release(); //release the IPC resources
-    fprintf(stderr,"Returned after all the threads have exited:\n");
-  }
-  return 0;
- out:
-  return -1;
+    struct list_head *run_queue  = &init_run_queue;
+    struct regs *ptr = &main_context.main_thread.thread_regs; //save the main threads context in this structure
+    if(LIST_EMPTY(run_queue) ) { //if the run queue is empty
+        fprintf(stderr,"Run Queue is Empty.Returning...\n");
+        goto out;
+    }
+    if(! save_regs(ptr) ) { 
+        fprintf(stderr,"Performing a switch to execute the threads after saving the main context:\n");
+        initialise();
+        schedule(); //run the scheduler that switches to the next process
+    }else { 
+        if(reaper) task_del(reaper); //release any zombie tasks
+        stop_timer();//stop the timer
+        ipc_release(); //release the IPC resources
+        fprintf(stderr,"Returned after all the threads have exited:\n");
+    }
+    return 0;
+    out:
+    return -1;
 }
 
 

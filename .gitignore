@@ -1,0 +1,6 @@
+*.a
+*.o
+*.dep
+*.depend
+*~
+main_prog

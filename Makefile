@@ -1,7 +1,8 @@
 ##Makefile for the Multi Threading Library,which seems to be working okay.
 CC=gcc
 DEBUG=-g #-DDEBUG
-CFLAGS=$(DEBUG) -Wall $(DEBUG) -mdynamic-no-pic
+CFLAGS=$(DEBUG) -Wall $(DEBUG)
+UNAME := $(shell uname)
 TARGET=libmythread.a
 AR=ar
 RANLIB=ranlib
@@ -13,6 +14,12 @@ CPP = cpp -P
 OBJECTS = task.o save_asm.o mytimer.o timer.o wait.o util.o sched.o sem.o main_sem.o
 AS=as
 ASFLAGS=-g
+ifeq ("$(UNAME)", "Darwin")
+	CFLAGS += -mdynamic-no-pic
+endif
+ifeq ("$(UNAME)", "Linux")
+	LDFLAGS += -static
+endif
 
 all:.depend $(TARGET) $(USER_APP) 
 
@@ -46,7 +53,7 @@ sched.o: sched.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 main_prog: main.o
-	$(CC) $(CFLAGS) -o $@ $^  -L./ -l$(MYLIB)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -L./ -l$(MYLIB)
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c $^ -o $@

@@ -9,9 +9,13 @@ RANLIB=ranlib
 MYLIB=mythread
 LIBDIR=/usr/lib
 INSTALL=install
-USER_APP=main_prog
-CPP = cpp -P
-OBJECTS = task.o save_asm.o mytimer.o timer.o wait.o util.o sched.o sem.o main_sem.o
+USER_APP_SRCS := main.c demo.c
+USER_APP_OBJS := $(USER_APP_SRCS%.c=.o)
+USER_APP=main_prog demo_prog
+LIB_SRCS := $(filter-out $(USER_APP_SRCS), $(wildcard *.c))
+LIB_SRCS += $(wildcard *.s)
+LIB_OBJS := $(LIB_SRCS:.c=.o)
+LIB_OBJS += $(LIB_SRCS:.s=.o)
 AS=as
 ASFLAGS=-g
 ifeq ("$(UNAME)", "Darwin")
@@ -23,7 +27,7 @@ endif
 
 all:.depend $(TARGET) $(USER_APP) 
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(LIB_OBJS)
 	$(AR) cr $@ $^;\
 	$(RANLIB) $@
 
@@ -31,47 +35,23 @@ install:
 	$(INSTALL) -d $(LIBDIR)
 	$(INSTALL) -m 0755 -C  $(TARGET) $(LIBDIR)/$(TARGET)
 
-task.o: task.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+%.o:%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-save_asm.o: save.s
-	$(AS) $(ASFLAGS) -o $@ $^
-
-#save.i: save.s
-#	$(CPP) -o $@ $^
-
-mytimer.o:mytimer.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-util.o: util.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+%.o:%.s
+	$(AS) $(ASFLAGS) -o $@ $<
 
 .dep .depend:
 	$(CC) $(CFLAGS) -M *.c > $@
 
-sched.o: sched.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
 main_prog: main.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -L./ -l$(MYLIB)
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-wait.o: wait.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-timer.o:timer.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-sem.o: sem.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-main_sem.o: main_sem.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+demo_prog: demo.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -L./ -l$(MYLIB)
 
 clean:
-	rm -f *.o *~ *.i .dep*
+	rm -f *.o *~ *.i .dep* $(USER_APP)
 
 
 ifeq (.depend,$(wildcard .depend) )

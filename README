@@ -1,2 +1,8 @@
 Simple Multi-Threading library for Linux providing the functionality similar to kernel related wait_queues, timers, scheduling interfaces through a User Space demonstration doing simple context-switching to achieve multi-threading.
- 
+
+Run the test:
+./demo_prog 
+to see 10 counting threads in action.
+You can bump it up all the way to 64 though its just a software limit that can be easily increased.
+./demo_prog 60
+to see the 60 counting user space threads getting scheduled  

@@ -60,4 +60,9 @@ extern struct list_head init_task;
 extern struct task_struct *current; //current task
 extern struct task_struct *reaper;
 extern volatile unsigned long jiffies;
+
+static __inline__ int get_tid(void) {
+    return current->pid;
+}
+
 #endif
